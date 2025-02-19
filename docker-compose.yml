@@ -37,11 +37,13 @@ services:
     image: mysql:8.0
     ports:
       - "3307:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: IEH_BD
-      MYSQL_USER: alumnoDAW
-      MYSQL_PASSWORD: passIEH
+    env_file:
+      - .env
+    # environment:
+    #   MYSQL_ROOT_PASSWORD: root
+    #   MYSQL_DATABASE: IEH_BD
+    #   MYSQL_USER: alumnoDAW
+    #   MYSQL_PASSWORD: passIEH
     volumes:
       - ./database/IEH.sql:/docker-entrypoint-initdb.d/IEH.sql
       - database_data:/var/lib/mysql
@@ -52,10 +54,12 @@ services:
     image: phpmyadmin/phpmyadmin
     ports:
       - "8080:80"
+    env_file:
+      - .env
     environment:
       PMA_HOST: database
-      PMA_USER: alumnoDAW
-      PMA_PASSWORD: passIEH
+      # PMA_USER: alumnoDAW
+      # PMA_PASSWORD: passIEH
     depends_on:
       - database
     networks:
@@ -67,6 +71,9 @@ services:
       dockerfile: DockerfileWeb
     ports:
       - "81:80"
+      - "443:443"
+    volumes:
+      - ./web/certs:/etc/nginx/certs
     depends_on:
       - frontend
       - backend
